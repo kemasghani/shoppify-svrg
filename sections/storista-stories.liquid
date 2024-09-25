@@ -1,0 +1,134 @@
+{% stylesheet %}
+  .storista-header {
+    display: flex;
+    width: 100%;
+  }
+
+  .storista-header-left {
+    justify-content: start;
+  }
+
+  .storista-header-center {
+    justify-content: center;
+  }
+
+  .storista-header-right {
+    justify-content: end;
+  }
+{% endstylesheet %}
+{% if section.settings.heading != "" %}
+<div class="storista-header storista-header-{{ section.settings.heading_position }}">
+    <h2 class="{{ section.settings.heading_css }}">{{ section.settings.heading }}</h2>
+</div>
+{% endif %}
+
+<div class="storista-wg storista-utils-center storista-section-{{ section.id }}" data-storista data-section-id="{{ section.id }}" data-storista-visible="{{ section.settings.stories_visible }}" data-storista-widget-id="{{ section.settings.stories_widget_id }}"></div>
+{% if request.design_mode == false %}
+<script type="text/javascript">
+    (function (w,d,s,o,f,js,fjs) {w['storista-widget']=o;w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments) };if (d.getElementById(o)) {return;}js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs);}(window, document, 'script', '_sw', 'https://cdn.storista.io/widget.js'));_sw('init', { widget_id: '{{ section.settings.stories_widget_id }}', attachTo: 'storista-section-{{ section.id }}', overrides: {{ section.settings | json }}});
+</script>
+{% endif %}
+
+{% comment %}
+PLEASE DON'T TOUCH ANYTHING BELOW THIS LINE
+{% endcomment %}
+{% if request.design_mode %}
+<script type="text/javascript">
+if (Shopify.designMode) {
+    document.addEventListener('shopify:section:load', function(event) {
+        var c = document.querySelector('div[data-section-id="' + event.detail.sectionId + '"]');
+        if (c && c.dataset.storistaVisible === 'true') {
+            window['storista-handler']('init', { widget_id: c.dataset.storistaWidgetId, attachTo: 'storista-section-' + event.detail.sectionId});
+        }
+    });
+    var c = document.querySelector('div[data-storista]');
+    if (c) {
+        (function (w,d,s,o,f,js,fjs) {w['storista-widget']=o;w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments) };if(d.getElementById(o)){return;}js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs);}(window, document, 'script', '_sw', 'https://cdn.storista.io/widget.js'));
+        _sw('init', { widget_id: c.dataset.storistaWidgetId, attachTo: 'storista-section-{{ section.id }}', overrides: {{ section.settings | json }}});
+    }
+}
+</script>
+{% endif %}
+
+{% schema %}
+{
+    "name": {
+        "en": "Storista Stories"
+    },
+    "settings": [
+        {
+            "type": "checkbox",
+            "label": {
+                "en": "Visible"
+            },
+            "default": true,
+            "id": "stories_visible"
+        },
+        {
+            "type": "text",
+            "label": {
+                "en": "Widget ID"
+            },
+            "id": "stories_widget_id"
+        },
+		{
+            "type": "checkbox",
+            "label": {
+                "en": "Mute audio"
+            },
+            "default": true,
+            "id": "muted"
+        },
+        {
+            "type": "header",
+            "content": "Section Header"
+        },
+        {
+            "type": "text",
+            "label": {
+                "en": "Heading"
+            },
+            "id": "heading"
+        },
+        {
+            "type": "select",
+            "id": "heading_position",
+            "label": "Alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "center"
+        },
+        {
+            "type": "paragraph",
+            "content": "If you have different style for section headings, please write CSS class names here"
+        },
+        {
+            "type": "text",
+            "label": {
+                "en": "Custom CSS class"
+            },
+            "id": "heading_css"
+        }
+    ],
+    "presets": [{
+    "name": {
+        "en": "Storista Stories"
+    },
+    "category": {
+        "en": "Image"
+    }
+  }]
+}
+{% endschema %}
