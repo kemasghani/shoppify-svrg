@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="{{ 'component-cart-notification.css' | asset_url }}" media="print" onload="this.media='all'">
+
 {%- liquid
   assign main_menu = linklists[section.settings.main_menu_link_list]
   assign toolbar_menu = linklists[section.settings.toolbar_menu]
@@ -79,6 +81,8 @@
     }
   {%- endif -%}
 </style>
+
+<script src="{{ 'cart-notification.js' | asset_url }}" defer="defer"></script>
 
 <div data-section-id="{{ section.id }}" data-section-type="header">
   {%- if overlay_header or section.settings.announcement_above_header -%}
@@ -227,6 +231,9 @@
     {%- render 'announcement-bar', section: section -%}
   {%- endunless -%}
 </div>
+{%- if settings.cart_type == "notification" -%}
+  {%- render 'cart-notification', color_scheme: section.settings.color_scheme, desktop_menu_type: section.settings.menu_type_desktop -%}
+{%- endif -%}
 
 {% schema %}
 {

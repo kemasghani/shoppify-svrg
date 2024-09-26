@@ -15,7 +15,7 @@
       {%- endif -%}
     {%- endfor -%}
   </select>
-  
+
   {%- liquid
     assign enable_dynamic_buttons = false
     if show_dynamic_checkout and template != 'product.preorder'
@@ -44,10 +44,12 @@
       name="add"
       data-add-to-cart
       class="btn btn--full add-to-cart{% if enable_dynamic_buttons and product.selling_plan_groups == empty %} btn--secondary{% endif %}"
-      {% unless current_variant.available %} disabled="disabled"{% endunless %}>
+      {% unless current_variant.available %} disabled="disabled"{% endunless %}
+      onclick="showLoadingSpinner()">
       <span data-add-to-cart-text data-default-text="{{ default_text }}">
         {{ button_text }}
       </span>
+      <div id="loading-spinner" class="spinner" style="display:none;"></div>
     </button>
 
     {%- if enable_dynamic_buttons -%}
@@ -60,5 +62,48 @@
 
   <div class="shopify-payment-terms product__policies">{{ form | payment_terms }}</div>
 
-  
 {%- endform -%}
+
+<!-- Pure CSS spinner -->
+<style>
+  .spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #09f;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .hide-text {
+    display: none;
+  }
+</style>
+
+<script>
+  function showLoadingSpinner() {
+    var spinner = document.getElementById('loading-spinner');
+    var buttonText = document.querySelector('[data-add-to-cart-text]');
+
+    // Show the spinner and hide the button text
+    spinner.style.display = 'inline-block';
+    buttonText.classList.add('hide-text');
+
+    // Simulate form submission and restore button text after loading
+    document.querySelector('.product-single__form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent form submission for demo purposes
+      setTimeout(function() {
+        spinner.style.display = 'none';
+        buttonText.classList.remove('hide-text'); // Show button text again after submission
+      }, 2000); // Adjust timing based on actual loading time
+    });
+  }
+</script>
